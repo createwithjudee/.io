@@ -206,22 +206,22 @@
       </div>
       <div class="project-grid reveal">
         <button type="button" class="project-card" data-category="lifestyle" aria-expanded="false">
-          <span class="project-icon">🌿</span>
-          <span class="project-tag">Lifestyle</span>
+          <span class="project-icon">☕</span>
+          <span class="project-tag">Cafes</span>
           <h3>Everyday Bloom Co.</h3>
           <p>Content calendar, Reels, and captions that grew a lifestyle brand's community online.</p>
           <span class="project-cta">View sample work ↓</span>
         </button>
         <button type="button" class="project-card" data-category="coffee" aria-expanded="false">
           <span class="project-icon">☕</span>
-          <span class="project-tag">Coffee</span>
+          <span class="project-tag">Real Estate</span>
           <h3>Roast &amp; Ritual</h3>
           <p>Social media management and email campaigns for an independent coffee roastery.</p>
           <span class="project-cta">View sample work ↓</span>
         </button>
         <button type="button" class="project-card" data-category="health" aria-expanded="false">
           <span class="project-icon">🌱</span>
-          <span class="project-tag">Health</span>
+          <span class="project-tag">Lifestyle + Health</span>
           <h3>Thrive Wellness Studio</h3>
           <p>Canva design assets and inbox management for a boutique wellness studio.</p>
           <span class="project-cta">View sample work ↓</span>
@@ -258,6 +258,7 @@
           <div class="contact-detail">📍 Working with brands worldwide, remotely</div>
         </div>
         <form id="contactForm">
+          <input type="hidden" name="access_key" value="0ab74c4d-c283-4370-8770-10d7b9c1562e">
           <div class="field">
             <label for="name">Name</label>
             <input id="name" name="name" type="text" placeholder="Your name" required>
@@ -327,19 +328,35 @@
   }, { threshold: 0.15 });
   revealEls.forEach(el => io.observe(el));
 
-  // Contact form (front-end only demo)
+ // Contact form (sends via Web3Forms)
   const form = document.getElementById('contactForm');
   const formMsg = document.getElementById('formMsg');
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    formMsg.textContent = "Thanks — I'll get back to you within a day. ✿";
-    form.reset();
+    formMsg.textContent = "Sending...";
+    const formData = new FormData(form);
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData
+      });
+      const result = await response.json();
+      if (result.success) {
+        formMsg.textContent = "Thanks — I'll get back to you within a day. ✿";
+        form.reset();
+      } else {
+        formMsg.textContent = "Something went wrong. Please try again.";
+      }
+    } catch (error) {
+      formMsg.textContent = "Something went wrong. Please try again.";
+    }
   });
 
   // Sample work gallery
   const sampleWork = {
     lifestyle: {
-      title: "Lifestyle samples",
+      title: "Cafes",
       images: [
         "https://picsum.photos/seed/judee-lifestyle-1/400/400",
         "https://picsum.photos/seed/judee-lifestyle-2/400/400",
@@ -350,7 +367,7 @@
       ]
     },
     coffee: {
-      title: "Coffee samples",
+      title: "Real Estate",
       images: [
         "https://picsum.photos/seed/judee-coffee-1/400/400",
         "https://picsum.photos/seed/judee-coffee-2/400/400",
@@ -361,7 +378,7 @@
       ]
     },
     health: {
-      title: "Health samples",
+      title: "Lifestyle + Health",
       images: [
         "https://picsum.photos/seed/judee-health-1/400/400",
         "https://picsum.photos/seed/judee-health-2/400/400",
